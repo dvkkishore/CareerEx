@@ -155,13 +155,13 @@ http://127.0.0.1:5000
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Dannana Venkata Kishore, Kuncha Supriya, Moldireddy Gari Swetha**  
 Vel Tech Rangarajan Dr.Sagunthala R&D Institute of Science and Technology  
 
 ---
 
-## 📜 License
+## License
 
 This project is for academic and learning purposes.
