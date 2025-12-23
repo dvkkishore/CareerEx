@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CareerEx - Universities</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to external CSS file for styling -->
+</head>
+<body>
+  <header>
+    <h1>CareerEx</h1>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('universities') }}" class="active">Universities</a></li>
+        <li><a href="{{ url_for('courses') }}">Courses</a></li>
+        <li><a href="{{ url_for('careers') }}">Careers</a></li>
+        <li><a href="{{ url_for('employment') }}">Employment</a></li>
+        {% if logged_in %} <!-- Check if the user is logged in -->
+        <li><a href="/logout">Logout</a></li> <!-- Add Logout link if user is logged in -->
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="filter-section">
+      <h2>Universities</h2>
+    <form method="post" action="/universities">
+        <label for="input_type">Filter By:</label>
+        <div id="input_div">
+          <select name="input_type" id="input_type">
+            <option value="courses">Courses</option>
+            <option value="city">City</option>
+            <option value="state">State</option>
+          </select>
+          <input type="text" name="input_value" id="input_value" required>
+        </div>
+        <button type="submit">Filter</button>
+    </form>
+    <h2>Recommended Universities:</h2>
+    {% if universities is none %}
+        <p>No universities to display.</p>
+    {% else %}
+        <ul>
+            {% for university in universities.iterrows() %}
+                <li>
+                    <h3>{{ university[1]['College Name'] }}</h3>
+                    <p><strong>Location:</strong> {{ university[1]['City'] }}, {{ university[1]['State'] }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </section>
+  </main>  
+  <footer>
+    <p>&copy; 2023 CareerEx. All rights reserved.</p>
+  </footer>
+  <script>
+    // Function to show the pop-up message
+    function showPopup() {
+      var popup = document.getElementById('popup');
+      popup.style.display = 'block';
+      setTimeout(function() {
+        popup.style.display = 'none';
+      }, 3000); // Hide the pop-up after 3 seconds
+    }
+  </script>
+  {% if logout_success %} <!-- Check if logout was successful -->
+  <div id="popup" class="popup">
+    You have successfully logged out.
+  </div>
+  <script>
+    // Call the showPopup function to display the pop-up message
+    showPopup();
+  </script>
+  {% endif %}
+</body>
+</html>

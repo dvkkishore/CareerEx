@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CareerEx - Your Career Exploration Platform</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to external CSS file for styling -->
+</head>
+<body>
+  <header>
+    <h1>CareerEx</h1>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+        <li><a href="{{ url_for('universities') }}">Universities</a></li>
+        <li><a href="{{ url_for('courses') }}">Courses</a></li>
+        <li><a href="{{ url_for('careers') }}">Careers</a></li>
+        <li><a href="{{ url_for('employment') }}">Employment</a></li>
+        {% if logged_in %} <!-- Check if the user is logged in -->
+        <li><a href="/logout">Logout</a></li> <!-- Add Logout link if user is logged in -->
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section>
+        <form method="post" action="/predict">
+          <label for="interests_hobbies">What are your interests and hobbies?</label>
+          <input type="text" id="interests_hobbies" name="interests_hobbies" required><br>
+
+          <label for="subjects_passionate">What subjects or fields are you most passionate about?</label>
+          <input type="text" id="subjects_passionate" name="subjects_passionate" required><br>
+
+          <label for="skills_talents">What skills or talents do you possess?</label>
+          <input type="text" id="skills_talents" name="skills_talents" required><br>
+
+          <label for="career_goals">What are your long-term career goals?</label>
+          <input type="text" id="career_goals" name="career_goals" required><br>
+
+          <label for="work_environment">What type of work environment do you prefer?</label>
+          <input type="text" id="work_environment" name="work_environment" required><br>
+
+          <label for="values_beliefs">What are your values and beliefs when it comes to work?</label>
+          <input type="text" id="values_beliefs" name="values_beliefs" required><br>
+
+          <label for="strengths_weaknesses">What are your strengths and weaknesses?</label>
+          <input type="text" id="strengths_weaknesses" name="strengths_weaknesses" required><br>
+
+          <label for="industry_field_thriving">What industry or field do you see yourself thriving in?</label>
+          <input type="text" id="industry_field_thriving" name="industry_field_thriving" required><br>
+
+          <label for="work_life_balance">How do you envision your ideal work-life balance?</label>
+          <input type="text" id="work_life_balance" name="work_life_balance" required><br>
+
+          <input type="submit" value="Predict">
+    </form>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2023 CareerEx. All rights reserved.</p>
+  </footer>
+  <script>
+    // Function to show the pop-up message
+    function showPopup() {
+      var popup = document.getElementById('popup');
+      popup.style.display = 'block';
+      setTimeout(function() {
+        popup.style.display = 'none';
+      }, 3000); // Hide the pop-up after 3 seconds
+    }
+  </script>
+  {% if logout_success %} <!-- Check if logout was successful -->
+  <div id="popup" class="popup">
+    You have successfully logged out.
+  </div>
+  <script>
+    // Call the showPopup function to display the pop-up message
+    showPopup();
+  </script>
+  {% endif %}
+</body>
+</html>

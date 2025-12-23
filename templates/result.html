@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CareerEx - Your Career Exploration Platform</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to external CSS file for styling -->
+</head>
+<body>
+  <header>
+    <h1>CareerEx</h1>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('index') }}" class="active">Home</a></li>
+        <li><a href="{{ url_for('universities') }}">Universities</a></li>
+        <li><a href="{{ url_for('courses') }}">Courses</a></li>
+        <li><a href="{{ url_for('careers') }}">Careers</a></li>
+        <li><a href="{{ url_for('employment') }}">Employment</a></li>
+        {% if logged_in %} <!-- Check if the user is logged in -->
+        <li><a href="/logout">Logout</a></li> <!-- Add Logout link if user is logged in -->
+        {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section>
+      
+    <h1>Results</h1><br>
+    <p><strong>Suited Career Field for you:</strong> {{ predicted_career }}</p>
+
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2023 CareerEx. All rights reserved.</p>
+  </footer>
+  <script>
+    // Function to show the pop-up message
+    function showPopup() {
+      var popup = document.getElementById('popup');
+      popup.style.display = 'block';
+      setTimeout(function() {
+        popup.style.display = 'none';
+      }, 3000); // Hide the pop-up after 3 seconds
+    }
+  </script>
+  {% if logout_success %} <!-- Check if logout was successful -->
+  <div id="popup" class="popup">
+    You have successfully logged out.
+  </div>
+  <script>
+    // Call the showPopup function to display the pop-up message
+    showPopup();
+  </script>
+  {% endif %}
+</body>
+</html>
