@@ -1,10 +1,8 @@
 # CareerEx
 
+**Documentation:** [Features](#what-the-repository-implements) · [Data flow](#how-it-works) · [Running locally](#local-setup-and-security) · [Technical overview](docs/TECHNICAL_OVERVIEW.md) · [Security notes](AUTH_REVIEW.md)
+
 **An academic career-exploration web prototype combining questionnaire-based classification with course, university and job search.**
-
-**At a glance:** Python · Flask · scikit-learn · NLP text features · MySQL · HTML/CSS · pandas
-
-**Explore:** [How it works](#how-it-works) · [Models and evidence](#ml-and-recommendation-methods) · [Case study](docs/CASE_STUDY.md) · [Setup and security](#local-setup-and-security) · [Collaborators](#team)
 
 ## The problem
 
