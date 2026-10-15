@@ -1,167 +1,77 @@
+# CareerEx
 
-# CareerEx   
-**Career Exploration and Recommendation Platform**
+**An academic career-exploration web prototype combining questionnaire-based classification with course, university and job search.**
 
-CareerEx is a full-stack web application designed to help students and professionals make informed career decisions. It leverages **Machine Learning**, **Natural Language Processing**, and **content-based recommendation systems** to predict suitable career fields and recommend relevant universities, courses, and job opportunities based on user input.
+**At a glance:** Python · Flask · scikit-learn · NLP text features · MySQL · HTML/CSS · pandas
 
----
+**Explore:** [How it works](#how-it-works) · [Models and evidence](#ml-and-recommendation-methods) · [Case study](docs/CASE_STUDY.md) · [Setup and security](#local-setup-and-security) · [Collaborators](#team)
 
-## Project Overview
+## The problem
 
-Choosing the right career path is a complex process involving interests, skills, goals, and market trends. CareerEx simplifies this process by:
+Career guidance often combines personal interests, skills and practical education and employment options. CareerEx brings several exploratory tools into one web interface so a user can compare possible paths. The application is a **learning project**, not a validated career adviser.
 
-- Predicting the most suitable **career field** using a trained ML model  
-- Recommending **universities** based on course, city, and state  
-- Filtering and recommending **job roles** based on skills and keywords  
-- Visualizing **employment statistics** for better decision-making  
+## What the repository implements
 
-This project is built using **Flask** and follows a modular, scalable architecture.
+- **Career-field suggestion:** a questionnaire whose text answers are converted into token-count features and classified with a serialized Multinomial Naive Bayes model.
+- **Job exploration:** keyword search against skills in `FinalJob.csv`, ranked using vectorized text and cosine similarity.
+- **University exploration:** filters on courses, city or state, with description-based cosine similarity as an additional ranking heuristic.
+- **Employment view:** a visualization of the tracked `job_data.csv` sample.
+- **Flask pages:** templates for the questionnaire, prediction output, universities, jobs and login.
 
----
+## How it works
 
-## Key Features
+```text
+Questionnaire answers -> text cleaning -> CountVectorizer vocabulary
+                                             |
+                                        Naive Bayes model
+                                             |
+                                      suggested career field
 
-- User Authentication (Login / Logout)
-- Career Field Prediction using **Multinomial Naive Bayes**
-- University Recommendation using **Content-Based Filtering**
-- Job Recommendation using **NLP + Cosine Similarity**
-- Employment Data Visualization
-- Clean modular project structure
-- Tested with multiple datasets
-
----
-
-## System Architecture
-
-CareerEx follows a **3-layer architecture**:
-
-1. **Presentation Layer**  
-   - HTML, CSS, Jinja Templates  
-   - User interaction and visualization  
-
-2. **Application Layer**  
-   - Flask backend  
-   - ML models and recommendation logic  
-
-3. **Data Layer**  
-   - CSV-based datasets  
-   - Serialized ML models (`.pkl`)  
-
----
-
-## Technologies Used
-
-### Backend
-- Python 3
-- Flask
-- Jinja2
-
-### Machine Learning & NLP
-- scikit-learn
-- Multinomial Naive Bayes
-- CountVectorizer
-- Cosine Similarity
-- pandas, numpy
-
-### Frontend
-- HTML5
-- CSS3
-- Bootstrap
-
-### Tools
-- Git & GitHub
-- Virtual Environment (`venv`)
-- Jupyter Notebook
-
----
-
-## Project Structure
-
-```
-CareerEx/
-│
-├── app.py                         # Main Flask application
-├── career_field.py                # Career prediction logic
-├── career_field_prediction_model.pkl
-├── vocabulary.pkl
-│
-├── templates/                     # HTML templates
-├── static/                        # CSS & assets
-│
-├── data/
-│   ├── career_fields.csv
-│   ├── universities.csv
-│   ├── jobs.csv
-│   ├── FinalJob.csv
-│   └── uni.csv
-│
-├── universities.ipynb             # Data analysis notebook
-├── requirements.txt               # Python dependencies
-├── README.md
-└── .gitignore
+Skill keywords -> CountVectorizer -> cosine similarity -> matching CSV jobs
+Course/location input -> university filter -> similarity -> matching universities
 ```
 
----
+The system uses local tabular datasets and serialized scikit-learn artifacts. `career_field.py` contains the training approach; `app.py` connects the saved model and recommendations to the web interface.
 
-## Installation & Setup
+## ML and recommendation methods
 
-### 1. Clone the Repository
+| Component | Evidence in repository | Limitation |
+| --- | --- | --- |
+| Career classifier | `career_field.py`, `career_fields.csv`, model/vocabulary pickles | No independently reproduced held-out accuracy or fairness study |
+| Job matching | `FinalJob.csv` and cosine similarity over the `Skills` field | Keyword similarity is not verified job-fit quality |
+| University suggestions | `uni.csv` and description/attribute matching | Heuristic, not personalized admissions advice |
+| Employment chart | `job_data.csv` | Small sample; not verified as authoritative labor statistics |
+
+See the [technical case study](docs/CASE_STUDY.md) for system boundaries and trade-offs.
+
+## Local setup and security
+
+The repository uses a historical Python dependency export and a MySQL database. A compatible environment, trusted model files and an appropriately configured local database are prerequisites.
+
 ```bash
-git clone https://github.com/your-username/CareerEx.git
+git clone https://github.com/dvkkishore/CareerEx.git
 cd CareerEx
-```
-
-### 2. Create Virtual Environment
-```bash
-python -m venv env
-source env/bin/activate   # Linux/Mac
-env\Scripts\activate    # Windows
-```
-
-### 3. Install Dependencies
-```bash
+python -m venv .venv
+# Activate the environment for your shell.
 pip install -r requirements.txt
-```
-
-### 4. Run the Application
-```bash
+# Set MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB and FLASK_SECRET_KEY.
 python app.py
 ```
 
-### 5. Access the App
-Open your browser and navigate to:
+**Important:** This is **not safe for public deployment as-is**. The current app still uses legacy plaintext-password storage and checking. Previously committed database credentials must be revoked or rotated at the database provider. See [SECURITY.md](SECURITY.md) and [AUTH_REVIEW.md](AUTH_REVIEW.md) before any deployment. Serialized pickles must only be loaded from trusted sources.
+
+For an offline source/dataset contract check:
+
+```bash
+python -m unittest discover -s tests -v
 ```
-http://127.0.0.1:5000
-```
 
----
+Passing these checks does not exercise the live MySQL application.
 
-## Machine Learning Details
+## Team
 
-- **Algorithm**: Multinomial Naive Bayes  
-- **Input**: User responses to career questionnaire  
-- **Output**: Predicted Career Field  
-- **Text Processing**: CountVectorizer  
-- **Recommendation Logic**: Content-based filtering using cosine similarity  
+Academic team credited in the original README: **Dannana Venkata Kishore, Kuncha Supriya, and Moldireddy Gari Swetha**, at Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology. This repository does not itemize each person's contribution; clarify individual roles before transferring this description to a personal portfolio.
 
----
+## Status
 
-## Use Cases
-
-- Students choosing a career path
-- Graduates selecting higher education options
-- Job seekers exploring suitable roles
-- Institutions analyzing career trends
-
----
-
-## Author
-
-**Dannana Venkata Kishore, Kuncha Supriya, Moldireddy Gari Swetha**  
-Vel Tech Rangarajan Dr.Sagunthala R&D Institute of Science and Technology  
-
----
-
-## License
-
-This project is for academic and learning purposes.
+Educational proof of concept. The project demonstrates an integration of classic NLP/ML techniques into a multi-page web interface; model accuracy, recommendation relevance, end-to-end installation and production security are **not independently verified**. No specific usage, impact or employment outcomes are claimed.
