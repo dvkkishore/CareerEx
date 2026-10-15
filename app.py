@@ -1,3 +1,4 @@
+import os
 from flask import Flask, redirect, render_template, request, url_for, session
 from flask_mysqldb import MySQL
 import pandas as pd
@@ -42,14 +43,14 @@ university_descriptions_matrix = uni_vectorizer.fit_transform(universities_df['d
 uni_cosine_similarities = cosine_similarity(university_descriptions_matrix)
 
 # MySQL configurations
-app.config['MYSQL_HOST'] = 'bqfnfor0rb1750evuwe9-mysql.services.clever-cloud.com'  # Replace with your MySQL host
-app.config['MYSQL_USER'] = 'uhohj6k8z1a2ofmr'       # Replace with your MySQL username
-app.config['MYSQL_PASSWORD'] = 'gnhesf9e5zIRiqaPLTn3'  # Replace with your MySQL password
-app.config['MYSQL_DB'] = 'bqfnfor0rb1750evuwe9'     # Replace with your MySQL database name
+app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
+app.config['MYSQL_USER'] = os.environ['MYSQL_USER']
+app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD']
+app.config['MYSQL_DB'] = os.environ['MYSQL_DB']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 # Secret key for session
-app.secret_key = 'your_secret_key'
+app.secret_key = os.environ['FLASK_SECRET_KEY']
 
 logged_in = False
 # Initialize MySQL
@@ -284,4 +285,4 @@ def predict():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=os.getenv('FLASK_DEBUG') == '1')
