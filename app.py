@@ -13,10 +13,9 @@ app = Flask(__name__)
 model = joblib.load('career_field_prediction_model.pkl')
 vocabulary = joblib.load('vocabulary.pkl')
 
-logout_success = False
 
 # Load jobs data from CSV file
-jobs_df = pd.read_csv('jobs.csv')
+jobs_df = pd.read_csv('FinalJob.csv')
 
 # Load universities data from CSV file
 universities_df = pd.read_csv('uni.csv')
@@ -25,10 +24,10 @@ universities_df.dropna(subset=['description'], inplace=True)
 
 # Create a CountVectorizer to convert job descriptions into a matrix of token counts
 vectorizer = CountVectorizer(stop_words='english')
-job_descriptions_matrix = vectorizer.fit_transform(jobs_df['Description'])
+job_descriptions_matrix = vectorizer.fit_transform(jobs_df['Skills'].fillna(''))
 
 # Compute cosine similarity between job descriptions
-jobs_cosine_similarities = cosine_similarity(job_descriptions_matrix)
+# Job-to-job pairwise similarity is not needed; avoid a quadratic startup allocation.
 
 # Set similarity threshold
 similarity_threshold = 0.1  # Update this value to your desired threshold
@@ -52,14 +51,24 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # Secret key for session
 app.secret_key = os.environ['FLASK_SECRET_KEY']
 
-logged_in = False
+def is_logged_in():
+    """Authenticate against the current request's signed Flask session."""
+    return bool(session.get("user_id"))
+
+
+@app.context_processor
+def auth_context():
+    """Supply navigation state to all Jinja templates."""
+    return {"logged_in": is_logged_in()}
+
+
 # Initialize MySQL
 mysql = MySQL(app)
 
 # Route for the index page
 @app.route('/')
 def index():
-    return render_template('index.html', logged_in = logged_in, logout_success = logout_success)
+    return render_template('index.html', logged_in = is_logged_in(), logout_success = session.pop('logout_success', False))
 
 # Route for the courses page
 @app.route('/courses')
@@ -71,7 +80,7 @@ def courses():
 # Route for careers.html
 @app.route('/careers', methods=['GET', 'POST'])
 def careers():
-    if logged_in:
+    if is_logged_in():
         if request.method == 'POST':
         # Get keyword input from the form
             keyword = request.form['keyword']
@@ -99,17 +108,17 @@ def careers():
                 similar_jobs_dict = similar_jobs.to_dict(orient='records')
                 
                 # Render the careers.html template with the similar jobs
-                return render_template('careers.html', jobs=similar_jobs_dict, logged_in = logged_in)    
+                return render_template('careers.html', jobs=similar_jobs_dict, logged_in = is_logged_in())    
         
         # Render the careers.html template without any job recommendations
-        return render_template('careers.html', logged_in = logged_in)    
+        return render_template('careers.html', logged_in = is_logged_in())    
     else:
         return redirect(url_for('login'))
 
 # Route for the employment page
 @app.route('/employment')
 def employment():
-    if logged_in:
+    if is_logged_in():
         # Read the CSV data into a Pandas DataFrame
         data = pd.read_csv('job_data.csv')
 
@@ -130,7 +139,7 @@ def employment():
         plt.savefig('static/job_growth.png')
 
         # Render the plot in the HTML template
-        return render_template('employment.html', plot_path='static/job_growth.png', logged_in = logged_in)
+        return render_template('employment.html', plot_path='static/job_growth.png', logged_in = is_logged_in())
     else:
         return redirect(url_for('login'))
 
@@ -167,7 +176,6 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        global logged_in, logout_success
         # Get form data
         username = request.form['username']
         password = request.form['password']
@@ -178,11 +186,11 @@ def login():
         user = cur.fetchone()
         cur.close()
         if user and user['password'] == password:
-            # Store user data in session for authentication
+            # Legacy plaintext credential comparison: see SECURITY.md for migration.
+            session.clear()
+            # Store user data in the current request's session
             session['user_id'] = user['id']
             session['username'] = user['username']
-            logged_in = True
-            logout_success = False
             return redirect(url_for('index'))
         else:
             error = 'Invalid username or password.'
@@ -193,15 +201,14 @@ def login():
 # Route for the logout page
 @app.route('/logout')
 def logout():
-    global logged_in, logout_success  # Access the global variable
-    logged_in = False  # Set logged_in status to False
-    logout_success = True
+    session.clear()
+    session["logout_success"] = True
     return redirect(url_for('index'))
 
 # Route for the universities page
 @app.route('/universities', methods=['GET', 'POST'])
 def universities():
-    if logged_in:
+    if is_logged_in():
         if request.method == 'POST':
             # Get user input from the form
             input_type = request.form['input_type']
@@ -236,23 +243,23 @@ def universities():
                 return render_template('universities.html', universities=None)
             
             # Render the universities.html template with the similar universities
-            return render_template('universities.html', universities=similar_universities, logged_in = logged_in)
+            return render_template('universities.html', universities=similar_universities, logged_in = is_logged_in())
         
         # Render the universities.html template without any recommendations
-        return render_template('universities.html', universities=None, logged_in = logged_in)
+        return render_template('universities.html', universities=None, logged_in = is_logged_in())
     else:
         return redirect(url_for('login'))
 
 @app.route('/forms')
 def forms():
-    if logged_in:
-        return render_template('forms.html', logged_in = logged_in)
+    if is_logged_in():
+        return render_template('forms.html', logged_in = is_logged_in())
     else:
         return redirect(url_for('login'))
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    if logged_in:
+    if is_logged_in():
         # Get user input from form
         interests_hobbies = request.form['interests_hobbies']
         subjects_passionate = request.form['subjects_passionate']
@@ -279,7 +286,7 @@ def predict():
         predicted_career = model.predict(input_data_vectorized)[0]
         print(predicted_career)
 
-        return render_template('result.html', predicted_career = predicted_career, logged_in = logged_in)
+        return render_template('result.html', predicted_career = predicted_career, logged_in = is_logged_in())
     else:
         return redirect(url_for('login'))
 

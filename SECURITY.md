@@ -8,8 +8,8 @@ This branch moves `MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DB` and `
 
 ## Unresolved security issues
 
-The existing authentication path compares plaintext passwords stored in the database, and the process-global `logged_in` flag is not a safe per-user authentication mechanism. Treat the existing app as **not safe for public deployment** until password storage, account migration or resets, session-based access control, CSRF protection, and tests have been addressed.
+The existing authentication path compares plaintext passwords stored in the database, and an earlier process-global `logged_in` flag caused session isolation risks (addressed by the stacked follow-up PR). Treat the existing app as **not safe for public deployment** until password storage, account migration or resets, session-based access control, CSRF protection, and tests have been addressed.
 
-The app additionally references an untracked `jobs.csv` file, so these configuration changes alone do not establish a working installation. No external database was accessed while preparing this change.
+The stacked follow-up PR changes the job dataset reference to tracked `FinalJob.csv`, but working installation and ML behavior remain unverified. No external database was accessed while preparing this change.
 
 If you believe credentials or personal data were accessed, review provider logs and consider appropriate incident-response obligations.
