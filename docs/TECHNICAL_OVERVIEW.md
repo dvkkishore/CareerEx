@@ -36,15 +36,15 @@ The application stores account data in MySQL, renders pages through Jinja templa
 | Jinja templates | UI flow across prediction, jobs, universities |
 | Offline test suite | Limited source/data contract checks |
 
-The existing documentation makes performance claims without a recorded, independently reproduced benchmark. Therefore these technical notes report **no model accuracy, placement outcome, or user adoption figures**.
+The available source and datasets document the modeling workflow, but no independently reproduced benchmark is included. Model accuracy, job-placement outcomes, and user adoption have not been established.
 
 ## Engineering and safety considerations
 
-The current app still compares **plaintext stored passwords**. Database credentials were previously committed publicly and must be rotated externally. A secure modern redesign would use password hashing with explicit migration/reset procedures, CSRF controls and deployment tests, rather than claiming this old Flask project is production-ready.
+The current application still compares **plaintext stored passwords**. Previously committed database credentials must be rotated at the provider. Public deployment would require password hashing with a deliberate account-migration/reset plan, CSRF controls, and end-to-end security testing.
 
 ## Team and source provenance
 
-**Academic collaborators credited:** Dannana Venkata Kishore, Kuncha Supriya and Moldireddy Gari Swetha. Specific individual modules are not attributed in the source, so this report does not invent personal ownership. For maintenance and attribution, confirm roles and design decisions with project records or collaborators.
+**Project contributors:** Dannana Venkata Kishore, Kuncha Supriya, and Moldireddy Gari Swetha. The available repository history does not provide a complete per-module attribution; further contribution details depend on the team's project records.
 
 **Primary sources:** [README](../README.md) · [Flask app](../app.py) · [classifier](../career_field.py) · [security review](../AUTH_REVIEW.md).
 
@@ -69,4 +69,4 @@ The original training script prints training and holdout accuracy, but no indepe
 
 ## Known deployment blockers
 
-Stored plaintext passwords are still compared during authentication, and database credentials were previously exposed in public Git history. They require a deliberate credential-rotation and account password migration plan outside these documentation changes. This project is not approved for public deployment.
+Stored plaintext passwords are still compared during authentication, and database credentials were previously exposed in public Git history. They require a deliberate credential-rotation and account password migration plan outside these documentation changes. This application should not be deployed as a public service until the documented security risks are addressed.
