@@ -40,7 +40,7 @@ The system uses local tabular datasets and serialized scikit-learn artifacts. `c
 | University suggestions | `uni.csv` and description/attribute matching | Heuristic, not personalized admissions advice |
 | Employment chart | `job_data.csv` | Small sample; not verified as authoritative labor statistics |
 
-See the [technical case study](docs/CASE_STUDY.md) for system boundaries and trade-offs.
+See the [technical overview](docs/TECHNICAL_OVERVIEW.md) for system boundaries and trade-offs.
 
 ## Local setup and security
 
@@ -68,7 +68,7 @@ Passing these checks does not exercise the live MySQL application.
 
 ## Team
 
-Academic team credited in the original README: **Dannana Venkata Kishore, Kuncha Supriya, and Moldireddy Gari Swetha**, at Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology. This repository does not itemize each person's contribution; clarify individual roles before transferring this description to a personal portfolio.
+Academic team credited in the original README: **Dannana Venkata Kishore, Kuncha Supriya, and Moldireddy Gari Swetha**, at Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology. This repository does not itemize individual responsibilities for the implemented components; refer to project records and collaborators for detailed attribution.
 
 ## Status
 
