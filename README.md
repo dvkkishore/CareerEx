@@ -68,8 +68,8 @@ Passing these checks does not exercise the live MySQL application.
 
 ## Team
 
-Academic team credited in the original README: **Dannana Venkata Kishore, Kuncha Supriya, and Moldireddy Gari Swetha**, at Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology. This repository does not itemize individual responsibilities for the implemented components; refer to project records and collaborators for detailed attribution.
+CareerEx was developed as an academic team project by **Dannana Venkata Kishore, Kuncha Supriya, and Moldireddy Gari Swetha** at Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology. Individual module responsibilities are not specified in the repository.
 
 ## Status
 
-Educational proof of concept. The project demonstrates an integration of classic NLP/ML techniques into a multi-page web interface; model accuracy, recommendation relevance, end-to-end installation and production security are **not independently verified**. No specific usage, impact or employment outcomes are claimed.
+**Educational proof of concept.** The application integrates classical NLP/ML techniques with a multi-page Flask interface. Model accuracy, recommendation relevance, end-to-end installation, and production security have not been independently validated. No usage or employment-outcome data is provided.
